@@ -20,6 +20,7 @@ defmodule CatcastsWeb.ConnCase do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
       alias CatcastsWeb.Router.Helpers, as: Routes
+      import Catcasts.TestHelpers
 
       # The default endpoint for testing
       @endpoint CatcastsWeb.Endpoint

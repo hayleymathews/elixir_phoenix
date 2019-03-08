@@ -22,6 +22,7 @@ defmodule Catcasts.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Catcasts.DataCase
+      import Catcasts.TestHelpers
     end
   end
 
