@@ -33,7 +33,7 @@ defmodule Catcasts.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.4.1"},
+      {:phoenix, "~> 1.4.1", override: true},
       {:phoenix_pubsub, "~> 1.1"},
       {:phoenix_ecto, "~> 4.0"},
       {:ecto_sql, "~> 3.0"},
@@ -47,6 +47,9 @@ defmodule Catcasts.MixProject do
       {:ueberauth_google, "~> 0.7"},
       {:poison, "~> 3.1"},
       {:httpoison, "~>1.4"},
+      {:number, "~>1.0.0"},
+      {:ecto, "~> 3.0", override: true},
+      {:rummage_phoenix, git: "https://github.com/thebrianemory/rp_catcasts"}
     ]
   end
 

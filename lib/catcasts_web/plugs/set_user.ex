@@ -19,7 +19,7 @@ defmodule Catcasts.Plugs.SetUser do
 
         true ->
           assign(conn, :user, nil)
-        end
       end
+    end
   end
 end

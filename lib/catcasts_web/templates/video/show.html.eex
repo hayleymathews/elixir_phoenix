@@ -1,32 +1,26 @@
-<h1>Show Video</h1>
-
-<ul>
-
-  <li>
-    <strong>Video:</strong>
-    <%= @video.video_id %>
-  </li>
-
-  <li>
-    <strong>Title:</strong>
-    <%= @video.title %>
-  </li>
-
-  <li>
-    <strong>Duration:</strong>
-    <%= @video.duration %>
-  </li>
-
-  <li>
-    <strong>Thumbnail:</strong>
-    <%= @video.thumbnail %>
-  </li>
-
-  <li>
-    <strong>View count:</strong>
-    <%= @video.view_count %>
-  </li>
-
-</ul>
-
-<span><%= link "Back", to: Routes.video_path(@conn, :index) %></span>
+<div class="mt-10 container mx-auto">
+  <div class="bg-grey-lighter shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col my-2">
+    <div class="-mx-3 md:flex mb-6">
+      <div class="md:w-full px-3">
+        <span class="text-grey-darkest font-bold md:text-2xl sm:text-xl"><%= @video.title %></span><br>
+        Duration: <%= @video.duration %><br>
+        Views: <%= Number.Delimit.number_to_delimited(@video.view_count, precision: 0) %>
+      </div>
+    </div>
+    <div class="-mx-3 md:flex mb-6 justify-center">
+      <div class="md:w-full px-3 mb-6 md:mb-0 embed-responsive aspect-ratio-16/9">
+        <iframe src="https://www.youtube.com/embed/<%= @video.video_id %>?rel=0" frameborder="0" allowfullscreen class="embed-responsive-item"></iframe>
+      </div>
+    </div>
+    <div class="-mx-3 flex">
+      <div class="w-1/2 px-3 text-left">
+        <%= link "Back", to: Routes.video_path(@conn, :index), class: "no-underline hover:underline uppercase text-grey-darker" %>
+      </div>
+      <div class="w-1/2 px-3 text-right">
+        <%= if @conn.assigns.user && @conn.assigns.user.id == @video.user_id do %>
+          <%= link "Delete", to: Routes.video_path(@conn, :delete, @video), method: :delete, data: [confirm: "Are you sure?"], class: "no-underline hover:underline uppercase text-red-dark" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

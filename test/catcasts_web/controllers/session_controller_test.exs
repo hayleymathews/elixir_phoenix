@@ -9,16 +9,17 @@ defmodule CatcastsWeb.SessionControllerTest do
   }
 
   test "redirect user to Google for authentication", %{conn: conn} do
-    conn = get conn, "/auth/google?scope=email%20profile"
+    conn = get(conn, "/auth/google?scope=email%20profile")
     assert redirected_to(conn, 302)
   end
 
   test "creates user from Google information", %{conn: conn} do
-    conn = conn
-    |> assign(:ueberauth_auth, @ueberauth_auth)
-    |> get("/auth/google/callback")
+    conn =
+      conn
+      |> assign(:ueberauth_auth, @ueberauth_auth)
+      |> get("/auth/google/callback")
 
-    users = User |> Repo.all
+    users = User |> Repo.all()
     assert Enum.count(users) == 1
     assert get_flash(conn, :info) == "Thank you for signing in!"
   end
@@ -32,7 +33,6 @@ defmodule CatcastsWeb.SessionControllerTest do
       |> get("/auth/signout")
       |> get("/")
 
-      assert conn.assigns.user == nil
+    assert conn.assigns.user == nil
   end
-
 end

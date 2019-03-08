@@ -1,33 +1,36 @@
-<h1>Listing Videos</h1>
-
-<table>
-  <thead>
-    <tr>
-      <th>Video</th>
-      <th>Title</th>
-      <th>Duration</th>
-      <th>Thumbnail</th>
-      <th>View count</th>
-
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-<%= for video <- @videos do %>
-    <tr>
-      <td><%= video.video_id %></td>
-      <td><%= video.title %></td>
-      <td><%= video.duration %></td>
-      <td><%= video.thumbnail %></td>
-      <td><%= video.view_count %></td>
-
-      <td>
-        <%= link "Show", to: Routes.video_path(@conn, :show, video) %>
-        <%= link "Delete", to: Routes.video_path(@conn, :delete, video), method: :delete, data: [confirm: "Are you sure?"] %>
-      </td>
-    </tr>
-<% end %>
-  </tbody>
-</table>
-
-<span><%= link "New Video", to: Routes.video_path(@conn, :new) %></span>
+<div class="flex justify-center mt-10 xs:mx-4 sm:mx-0">
+  <div class="bg-grey-lighter shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col my-2">
+    <div class="-mx-3 md:flex mb-6">
+      <div class="md:w-full px-3 text-grey-darkest font-bold uppercase text-base">
+        Cat Videos
+      </div>
+    </div>
+    <div class="-mx-3 md:flex mb-6">
+      <div class="md:w-full px-3 text-grey-darkest font-bold uppercase text-sm">
+        Sort by: <%= sort_link @conn, @rummage, [field: :title, ci: true] %> ~ <%= sort_link @conn, @rummage, [field: :view_count] %> ~ <%= sort_link @conn, @rummage, [field: :duration] %>
+      </div>
+    </div>
+    <div class="-mx-3 md:flex mb-6">
+      <div class="md:w-full px-3 text-grey-darkest font-bold uppercase text-base">
+        <%= search_form(@conn, @rummage, [fields: [title: %{label: "", search_type: "ilike"},], button_class: "hidden"]) %>
+      </div>
+    </div>
+    <%= for video <- @videos do %>
+      <div class="-mx-3 md:flex mb-6">
+        <div class="md:w-full px-3">
+          <%= link video.title, to: Routes.video_path(@conn, :show, video), class: "no-underline hover:underline text-grey-darkest font-bold text-lg" %><br>
+          Duration: <%= video.duration %><br>
+          Views: <%= Number.Delimit.number_to_delimited(video.view_count, precision: 0) %>
+        </div>
+      </div>
+      <div class="-mx-3 flex mb-6">
+        <div class="md:w-full px-3 mb-6 md:mb-0 border-b-4 pb-4 flex justify-center">
+          <%= link img_tag(video.thumbnail, style: "width:600px"), to: Routes.video_path(@conn, :show, video) %>
+        </div>
+      </div>
+    <% end %>
+    <div class="flex px-3 justify-center">
+      <%= pagination_link(@conn, @rummage) %>
+    </div>
+  </div>
+</div>

@@ -18,7 +18,8 @@ defmodule Catcasts.Multimedia.YoutubeData do
           get_json_data(video_id)
           |> decode_json_data()
 
-          duration = get_formatted_time(video_data)
+        duration = get_formatted_time(video_data)
+
         {:ok, video} =
           Multimedia.create_video(user, %{
             duration: duration,

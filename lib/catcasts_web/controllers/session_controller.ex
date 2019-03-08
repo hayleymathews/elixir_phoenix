@@ -21,6 +21,7 @@ defmodule CatcastsWeb.SessionController do
         |> put_flash(:info, "Thank you for signing in!")
         |> put_session(:user_id, user.id)
         |> redirect(to: Routes.video_path(conn, :index))
+
       {:error, _reason} ->
         conn
         |> put_flash(:error, "Error signing in")
@@ -38,6 +39,7 @@ defmodule CatcastsWeb.SessionController do
     case Repo.get_by(User, email: changeset.changes.email) do
       nil ->
         Repo.insert(changeset)
+
       user ->
         {:ok, user}
     end

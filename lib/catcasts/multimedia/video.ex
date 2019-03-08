@@ -1,7 +1,7 @@
 defmodule Catcasts.Multimedia.Video do
   use Ecto.Schema
+  use Rummage.Ecto
   import Ecto.Changeset
-
 
   schema "videos" do
     field :duration, :string

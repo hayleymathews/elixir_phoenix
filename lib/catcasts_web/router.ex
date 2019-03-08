@@ -38,6 +38,4 @@ defmodule CatcastsWeb.Router do
     get "/:provider", SessionController, :request
     get "/:provider/callback", SessionController, :create
   end
-
-
 end

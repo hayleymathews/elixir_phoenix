@@ -14,7 +14,7 @@ defmodule CatcastsWeb.VideoControllerTest do
   describe "index" do
     test "lists all videos", %{conn: conn} do
       conn = get(conn, Routes.video_path(conn, :index))
-      assert html_response(conn, 200) =~ "Listing Videos"
+      assert html_response(conn, 200) =~ "Cat Videos"
     end
   end
 
@@ -26,13 +26,24 @@ defmodule CatcastsWeb.VideoControllerTest do
         conn
         |> assign(:user, user)
         |> get(Routes.video_path(conn, :new))
+
       assert html_response(conn, 200) =~ "type=\"submit\">Add video</button>"
+    end
+  end
+
+  describe "show video" do
+    test "shows chosen video", %{conn: conn} do
+      user = user_fixture()
+      video = youtube_video_fixture(user)
+      conn = get(conn, Routes.video_path(conn, :show, video))
+      assert html_response(conn, 200) =~ video.title
     end
   end
 
   describe "create video" do
     test "redirects to show when data is valid", %{conn: conn} do
       user = user_fixture()
+
       conn =
         conn
         |> assign(:user, user)
@@ -40,12 +51,14 @@ defmodule CatcastsWeb.VideoControllerTest do
 
       assert %{id: id} = redirected_params(conn)
       assert redirected_to(conn) == Routes.video_path(conn, :show, id)
+
       assert html_response(conn, 302) =~
-        "<html><body>You are being <a href=\"/videos/#{id}\">redirected</a>.</body></html>"
+               "<html><body>You are being <a href=\"/videos/#{id}\">redirected</a>.</body></html>"
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
       user = user_fixture()
+
       conn =
         conn
         |> assign(:user, user)
