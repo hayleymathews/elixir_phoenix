@@ -1,0 +1,32 @@
+<h1>Show Video</h1>
+
+<ul>
+
+  <li>
+    <strong>Video:</strong>
+    <%= @video.video_id %>
+  </li>
+
+  <li>
+    <strong>Title:</strong>
+    <%= @video.title %>
+  </li>
+
+  <li>
+    <strong>Duration:</strong>
+    <%= @video.duration %>
+  </li>
+
+  <li>
+    <strong>Thumbnail:</strong>
+    <%= @video.thumbnail %>
+  </li>
+
+  <li>
+    <strong>View count:</strong>
+    <%= @video.view_count %>
+  </li>
+
+</ul>
+
+<span><%= link "Back", to: Routes.video_path(@conn, :index) %></span>
