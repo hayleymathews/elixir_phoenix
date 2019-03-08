@@ -18,7 +18,7 @@ defmodule Catcasts.Multimedia do
 
   """
   def list_videos do
-    Repo.all(Video)
+    Repo.all(Video) |> Repo.preload(:user)
   end
 
   @doc """
@@ -35,7 +35,7 @@ defmodule Catcasts.Multimedia do
       ** (Ecto.NoResultsError)
 
   """
-  def get_video!(id), do: Repo.get!(Video, id)
+  def get_video!(id), do: Repo.get!(Video, id) |> Repo.preload(:user)
 
   @doc """
   Creates a video.
@@ -49,9 +49,10 @@ defmodule Catcasts.Multimedia do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_video(attrs \\ %{}) do
+  def create_video(user, attrs \\ %{}) do
     %Video{}
     |> Video.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:user, user)
     |> Repo.insert()
   end
 

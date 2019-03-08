@@ -14,4 +14,21 @@ defmodule CatcastsWeb.NavigationTest do
 
     assert html_response(conn, 200) =~ "Sign out"
   end
+
+  test "shows a link to the videos index", %{conn: conn} do
+    conn = get(conn, "/")
+
+    assert html_response(conn, 200) =~ "href=\"/videos\">Videos</a>"
+  end
+
+  test "shows a link to add video for a signed in user", %{conn: conn} do
+    user = user_fixture()
+
+    conn =
+      conn
+      |> assign(:user, user)
+      |> get("/")
+
+    assert html_response(conn, 200) =~ "href=\"/videos/new\">Add video</a>"
+  end
 end

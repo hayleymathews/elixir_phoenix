@@ -2,7 +2,7 @@ defmodule CatcastsWeb.VideoController do
   use CatcastsWeb, :controller
 
   alias Catcasts.Multimedia
-  alias Catcasts.Multimedia.Video
+  alias Catcasts.Multimedia.{YoutubeData, Video}
 
   def index(conn, _params) do
     videos = Multimedia.list_videos()
@@ -15,14 +15,20 @@ defmodule CatcastsWeb.VideoController do
   end
 
   def create(conn, %{"video" => video_params}) do
-    case Multimedia.create_video(video_params) do
-      {:ok, video} ->
-        conn
-        |> put_flash(:info, "Video created successfully.")
-        |> redirect(to: Routes.video_path(conn, :show, video))
+    case YoutubeData.has_valid_url?(video_params) do
+      nil ->
+        changeset = Video.changeset(%Video{}, video_params)
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
+        conn
+        |> put_flash(:error, "Invalid YouTube URL")
+        |> render("new.html", changeset: changeset)
+
+      url_info ->
+        [video, message] = YoutubeData.insert_or_get_video(url_info, conn.assigns.user)
+
+        conn
+        |> put_flash(:info, message)
+        |> redirect(to: Routes.video_path(conn, :show, video))
     end
   end
 
