@@ -4,6 +4,8 @@ defmodule CatcastsWeb.VideoController do
   alias Catcasts.Multimedia
   alias Catcasts.Multimedia.{YoutubeData, Video}
 
+  plug :check_video_owner when action in [:delete]
+
   def index(conn, _params) do
     videos = Multimedia.list_videos()
     render(conn, "index.html", videos: videos)
@@ -44,5 +46,22 @@ defmodule CatcastsWeb.VideoController do
     conn
     |> put_flash(:info, "Video deleted successfully.")
     |> redirect(to: Routes.video_path(conn, :index))
+  end
+
+  defp check_video_owner(conn, _params) do
+    %{params: %{"id" => video_id}} = conn
+
+    video = Catcasts.Repo.get(Video, video_id)
+
+    case video.user_id == conn.assigns.user.id do
+      true ->
+        conn
+
+      false ->
+        conn
+        |> put_flash(:error, "You cannot do that")
+        |> redirect(to: Routes.video_path(conn, :show, video))
+        |> halt()
+    end
   end
 end

@@ -11,24 +11,6 @@ defmodule CatcastsWeb.VideoControllerTest do
     video
   end
 
-  def youtube_video_fixture(attrs \\ %{}) do
-    user = user_fixture()
-
-    video_params =
-      attrs
-      |> Enum.into(%{
-        duration: "PT2M2S",
-        thumbnail: "https://i.ytimg.com/vi/1rlSjdnAKY4/hqdefault.jpg",
-        title: "Super Troopers (2/5) Movie CLIP - The Cat Game (2001) HD",
-        video_id: "1rlSjdnAKY4",
-        view_count: 658_281
-      })
-
-    {:ok, video} = Multimedia.create_video(user, video_params)
-
-    video
-  end
-
   describe "index" do
     test "lists all videos", %{conn: conn} do
       conn = get(conn, Routes.video_path(conn, :index))
@@ -38,7 +20,12 @@ defmodule CatcastsWeb.VideoControllerTest do
 
   describe "new video" do
     test "renders form", %{conn: conn} do
-      conn = get(conn, Routes.video_path(conn, :new))
+      user = user_fixture()
+
+      conn =
+        conn
+        |> assign(:user, user)
+        |> get(Routes.video_path(conn, :new))
       assert html_response(conn, 200) =~ "type=\"submit\">Add video</button>"
     end
   end
@@ -69,14 +56,36 @@ defmodule CatcastsWeb.VideoControllerTest do
   end
 
   describe "delete video" do
-
     test "deletes chosen video", %{conn: conn} do
-      video = youtube_video_fixture()
-      conn = delete(conn, Routes.video_path(conn, :delete, video))
+      user = user_fixture()
+      video = youtube_video_fixture(user)
+
+      conn =
+        conn
+        |> assign(:user, user)
+        |> delete(Routes.video_path(conn, :delete, video))
+
       assert redirected_to(conn) == Routes.video_path(conn, :index)
+
       assert_error_sent 404, fn ->
         get(conn, Routes.video_path(conn, :show, video))
       end
+    end
+
+    test "cannot delete chosen video", %{conn: conn} do
+      user1 = user_fixture()
+      user2 = user_fixture()
+      video = youtube_video_fixture(user2)
+
+      conn =
+        conn
+        |> assign(:user, user1)
+        |> delete(Routes.video_path(conn, :delete, video))
+
+      assert redirected_to(conn) == Routes.video_path(conn, :show, video)
+
+      assert html_response(conn, 302) =~
+               "<html><body>You are being <a href=\"/videos/#{video.id}\">redirected</a>.</body></html>"
     end
   end
 
